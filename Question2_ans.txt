@@ -1,0 +1,46 @@
+Q.2. The following questions test your aptitude for interacting with databases. The questions are based off the following public SQL DB: https://docs.rfam.org/en/latest/database.html
+-------------------------------------------------------------------------------------------------------------------------------------------
+a. How many types of tigers can be found in the taxonomy table of the dataset? What is the "ncbi_id" of the Sumatran Tiger? (hint: use the biological name of the tiger)
+
+Question a) answer below --
+
+SELECT COUNT(*) AS num_tiger_types, ncbi_id
+FROM taxonomy
+WHERE tax_string LIKE '%tiger%'
+  AND tax_string LIKE '%Panthera tigris sumatrae%';
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+b. Find all the columns that can be used to connect the tables in the given database.
+
+Question b) answer below 
+
+SELECT COLUMN_NAME, TABLE_NAME
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_SCHEMA = 'Rfam';
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+c. Which type of rice has the longest DNA sequence? (hint: use the rfamseq and the taxonomy tables)
+
+Question c) answer below 
+
+SELECT MAX(LENGTH(rs.seq)) AS max_sequence_length, tx.tax_string
+FROM rfamseq rs
+JOIN taxonomy tx ON rs.ncbi_id = tx.ncbi_id
+WHERE tx.tax_string LIKE '%Oryza sativa%'
+GROUP BY tx.tax_string
+ORDER BY max_sequence_length DESC
+LIMIT 1;
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+d. We want to paginate a list of the family names and their longest DNA sequence lengths (in descending order of length) where only families that have DNA sequence lengths greater than 1,000,000 are included. Give a query that will return the 9th page when there are 15 results per page. (hint: we need the family accession ID, family name and the maximum length in the results)
+
+Question d) answer below 
+
+SELECT f.rfam_acc, f.family_name, MAX(LENGTH(rs.seq)) AS max_sequence_length
+FROM family f
+JOIN rfamseq rs ON f.rfam_acc = rs.rfam_acc
+GROUP BY f.rfam_acc, f.family_name
+HAVING max_sequence_length > 1000000
+ORDER BY max_sequence_length DESC
+LIMIT 15 OFFSET 120; 
+-------------------------------------------------------------------------------------------------------------------------------------------
