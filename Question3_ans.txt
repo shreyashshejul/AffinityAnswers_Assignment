@@ -1,0 +1,22 @@
+Q.3. This question is to test your aptitude for writing small shell scripts on Unix. You are given this URL https://www.amfiindia.com/spages/NAVAll.txt. Write a shell script that extracts the Scheme Name and Asset Value fields only and saves them in a tsv file. And ever wondered if this data should not be stored in JSON?
+
+Question 3 answer below
+
+#!/bin/bash
+
+# URL to fetch data from
+URL="https://www.amfiindia.com/spages/NAVAll.txt"
+
+# Output file
+OUTPUT_FILE="nav_data.tsv"
+
+# Fetch data from the URL and filter Scheme Name and Asset Value fields
+curl -s "$URL" | awk -F ';' '{print $3 "\t" $5}' > "$OUTPUT_FILE"
+
+echo "Data extraction complete. Saved to $OUTPUT_FILE"
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+Save this script to a file, e.g., extract_nav_data.sh. Make sure to give it execute permissions:
+chmod +x extract_nav_data.sh
+Then, you can run the script:
+./extract_nav_data.sh
